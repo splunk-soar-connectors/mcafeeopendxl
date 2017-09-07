@@ -1,10 +1,11 @@
 # Phantom App imports
 import os
-import phantom.app as phantom
 
-from dxl_consts import *
+import phantom.app as phantom
 from phantom.base_connector import BaseConnector
 from phantom.action_result import ActionResult
+
+from dxl_consts import *
 
 from dxlclient.client import DxlClient
 from dxlclient.client_config import DxlClientConfig
@@ -48,15 +49,15 @@ class DXLConnector(BaseConnector):
         self.save_progress(phantom.APP_PROG_CONNECTING_TO_ELLIPSES, dxl_topic)
 
         try:
-           dir = os.path.dirname(__file__)
-           CONFIG_FILE = os.path.join(dir, 'certs/dxlclient.config')
-           dxlconfig = DxlClientConfig.create_dxl_config_from_file(CONFIG_FILE)
+            dir = os.path.dirname(__file__)
+            CONFIG_FILE = os.path.join(dir, 'certs/dxlclient.config')
+            dxlconfig = DxlClientConfig.create_dxl_config_from_file(CONFIG_FILE)
 
-           with DxlClient(dxlconfig) as client:
-              client.connect()
-              event = Event(dxl_topic)
-              event.payload = str(dxl_tmsg).encode()
-              client.send_event(event)
+            with DxlClient(dxlconfig) as client:
+                client.connect()
+                event = Event(dxl_topic)
+                event.payload = str(dxl_tmsg).encode()
+                client.send_event(event)
 
         except:
             self.set_status(phantom.APP_ERROR, DXL_ERR_SERVER_CONNECTION)
@@ -79,22 +80,19 @@ class DXLConnector(BaseConnector):
         dxl_msg = param[DXL_PUSH_IP]
 
         try:
-           dir = os.path.dirname(__file__)
-           CONFIG_FILE = os.path.join(dir, 'certs/dxlclient.config')
-           dxlconfig = DxlClientConfig.create_dxl_config_from_file(CONFIG_FILE)
+            dir = os.path.dirname(__file__)
+            CONFIG_FILE = os.path.join(dir, 'certs/dxlclient.config')
+            dxlconfig = DxlClientConfig.create_dxl_config_from_file(CONFIG_FILE)
 
-           with DxlClient(dxlconfig) as client:
-              client.connect()
-              event = Event(dxl_topic)
-              event.payload = str(dxl_msg).encode()
-              client.send_event(event)
-              action_result.add_data(dxl_msg)
-              action_result.set_status(phantom.APP_SUCCESS, DXL_SUCC_QUERY)
+            with DxlClient(dxlconfig) as client:
+                client.connect()
+                event = Event(dxl_topic)
+                event.payload = str(dxl_msg).encode()
+                client.send_event(event)
+                action_result.add_data(dxl_msg)
+                action_result.set_status(phantom.APP_SUCCESS, DXL_SUCC_QUERY)
 
         except:
-            self.set_status(phantom.APP_ERROR, DXL_ERR_SERVER_CONNECTION)
-            self.append_to_message(DXL_ERR_CONNECTIVITY_TEST)
-            return self.get_status()
             action_result.set_status(phantom.APP_ERROR, DXL_ERR_QUERY, dxl_msg)
             return action_result.get_status()
 
@@ -113,47 +111,46 @@ class DXLConnector(BaseConnector):
         dxl_rep = param[DXL_REP]
 
         if (dxl_rep == "KNOWN_TRUSTED_INSTALLER"):
-           dxl_rep = "100"
+            dxl_rep = "100"
         elif (dxl_rep == "KNOWN_TRUSTED"):
-           dxl_rep = "99"
+            dxl_rep = "99"
         elif (dxl_rep == "MOST_LIKELY_TRUSTED"):
-           dxl_rep = "85"
+            dxl_rep = "85"
         elif (dxl_rep == "MIGHT_BE_TRUSTED"):
-           dxl_rep = "70"
+            dxl_rep = "70"
         elif (dxl_rep == "UNKNOWN"):
-           dxl_rep = "50"
+            dxl_rep = "50"
         elif (dxl_rep == "MIGHT_BE_MALICIOUS"):
-           dxl_rep = "30"
+            dxl_rep = "30"
         elif (dxl_rep == "MOST_LIKELY_MALICIOUS"):
-           dxl_rep = "15"
+            dxl_rep = "15"
         elif (dxl_rep == "KNOWN_MALICIOUS"):
-           dxl_rep = "1"
+            dxl_rep = "1"
         elif (dxl_rep == "NOT_SET"):
-           dxl_rep = "0"
+            dxl_rep = "0"
 
         try:
-           dir = os.path.dirname(__file__)
-           CONFIG_FILE = os.path.join(dir, 'certs/dxlclient.config')
-           dxlconfig = DxlClientConfig.create_dxl_config_from_file(CONFIG_FILE)
+            dir = os.path.dirname(__file__)
+            CONFIG_FILE = os.path.join(dir, 'certs/dxlclient.config')
+            dxlconfig = DxlClientConfig.create_dxl_config_from_file(CONFIG_FILE)
 
-           with DxlClient(dxlconfig) as client:
-              client.connect()
-              tie_client = TieClient(client)
-              tie_client.set_file_reputation(
-                  dxl_rep, {
-                      HashType.MD5: dxl_msg
-                  },
-                  filename="Phantom_SharedHash",
-                  comment="Reputation set via Phantom"
-              )
-              action_result.add_data(dxl_msg)
-              action_result.set_status(phantom.APP_SUCCESS, DXL_SUCC_QUERY)
+            with DxlClient(dxlconfig) as client:
+                client.connect()
+                tie_client = TieClient(client)
+                tie_client.set_file_reputation(
+                    dxl_rep, {
+                        HashType.MD5: dxl_msg
+                    },
+                    filename="Phantom_SharedHash",
+                    comment="Reputation set via Phantom"
+                )
+                action_result.add_data(dxl_msg)
+                action_result.set_status(phantom.APP_SUCCESS, DXL_SUCC_QUERY)
         except:
             self.set_status(phantom.APP_ERROR, DXL_ERR_SERVER_CONNECTION)
             self.append_to_message(DXL_ERR_CONNECTIVITY_TEST)
             return self.get_status()
-            action_result.set_status(phantom.APP_ERROR, DXL_ERR_QUERY, dxl_msg)
-            return action_result.get_status()
+        action_result.set_status(phantom.APP_ERROR, DXL_ERR_QUERY, dxl_msg)
 
         return action_result.get_status()
 
@@ -169,24 +166,23 @@ class DXLConnector(BaseConnector):
         dxl_msg = param[DXL_LOOKUP_MD5]
 
         try:
-           dir = os.path.dirname(__file__)
-           CONFIG_FILE = os.path.join(dir, 'certs/dxlclient.config')
-           dxlconfig = DxlClientConfig.create_dxl_config_from_file(CONFIG_FILE)
+            dir = os.path.dirname(__file__)
+            CONFIG_FILE = os.path.join(dir, 'certs/dxlclient.config')
+            dxlconfig = DxlClientConfig.create_dxl_config_from_file(CONFIG_FILE)
 
-           with DxlClient(dxlconfig) as client:
-              client.connect()
-              marclient = MarClient(client)
+            with DxlClient(dxlconfig) as client:
+                client.connect()
+                marclient = MarClient(client)
 
-              results_context = \
-                  marclient.search(
-                     projections=[{
-                           "name": "HostInfo",
-                           "outputs": ["hostname", "ip_address"]
-                     }, {
-                           "name": "Files",
-                           "outputs": ["md5", "status"]
-                     }],
-                     conditions={
+                results_context = marclient.search(
+                    projections=[{
+                        "name": "HostInfo",
+                        "outputs": ["hostname", "ip_address"]
+                    }, {
+                        "name": "Files",
+                        "outputs": ["md5", "status"]
+                    }],
+                    conditions={
                         "or": [{
                             "and": [{
                                 "name": "Files",
@@ -195,20 +191,17 @@ class DXLConnector(BaseConnector):
                                 "value": dxl_msg
                             }]
                         }]
-                     }
-                  )
+                    }
+                )
 
-              if results_context.has_results:
-                  results = results_context.get_results(limit=10)
-                  print results
+                if results_context.has_results:
+                    results = results_context.get_results(limit=10)
+                print results
 
-           action_result.add_data(results)
-           action_result.set_status(phantom.APP_SUCCESS, DXL_SUCC_QUERY)
+            action_result.add_data(results)
+            action_result.set_status(phantom.APP_SUCCESS, DXL_SUCC_QUERY)
 
         except:
-            self.set_status(phantom.APP_ERROR, DXL_ERR_SERVER_CONNECTION)
-            self.append_to_message(DXL_ERR_CONNECTIVITY_TEST)
-            return self.get_status()
             action_result.set_status(phantom.APP_ERROR, DXL_ERR_QUERY, dxl_msg)
             return action_result.get_status()
 
