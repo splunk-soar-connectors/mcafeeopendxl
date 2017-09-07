@@ -1,0 +1,13 @@
+DXL_TOPIC = "dxl_topic"
+DXL_TMSG = "dxl_tmsg"
+DXL_PUSH_IP = "dxl_ip"
+DXL_PUSH_MD5 = "tie_md5"
+DXL_LOOKUP_MD5 = "mar_md5"
+DXL_REP = "dxl_rep"
+
+DXL_ERR_QUERY = "DXL query failed"
+DXL_SUCC_QUERY = "DXL query successful"
+DXL_ERR_QUERY_RETURNED_NO_DATA = "DXL did not return any information"
+DXL_ERR_SERVER_CONNECTION = "Connection to server failed"
+DXL_ERR_CONNECTIVITY_TEST = "Connectivity test failed"
+DXL_SUCC_CONNECTIVITY_TEST = "Connectivity test passed"

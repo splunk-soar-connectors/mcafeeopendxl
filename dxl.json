@@ -1,0 +1,248 @@
+{
+    "appid"       : "527f30ab-69f6-44c9-8d56-c39ea81dc906",
+    "name"      : "McAfee OpenDXL",
+    "description" : "Push Notfications over McAfee OpenDXL",
+    "publisher": "Martin Ohl",
+    "package_name": "phantom_dxl",
+    "type": "threat intel",
+    "license": "Copyright (c) Martin Ohl 2017",
+    "main_module" : "dxl_connector.pyc",
+    "app_version": "1.1",
+    "utctime_updated": "2017-03-10T07:09:42.000000Z",
+    "product_vendor": "McAfee",
+    "product_name": "OpenDXL",
+    "product_version_regex": ".*",
+    "min_phantom_version": "1.2.236",
+    "logo": "dxl.png",
+    "configuration": {
+          "dxl_topic": {
+            "description": "DXL Topic",
+            "data_type": "string",
+            "required": false,
+            "order": 0
+          },
+          "dxl_tmsg": {
+            "description": "OpenDXL Test Message",
+            "data_type": "string",
+            "required": false,
+            "order": 1
+          }
+    },
+    "actions": [
+      {
+        "action": "test connectivity",
+        "description": "Validate the asset configuration for DXL connectivity.",
+        "type": "test",
+        "identifier": "test_asset_connectivity",
+        "read_only": true,
+        "parameters": {
+        },
+        "output": [],
+        "versions":"EQ(*)"
+      },
+      {
+        "action" : "dxl push ip",
+        "description": "Push an event over the McAfee DXL fabric",
+        "type": "contain",
+        "identifier": "dxl_ip",
+        "read_only": true,
+        "parameters": {
+          "dxl_ip": {
+            "description": "DXL message to push",
+            "data_type": "string",
+            "contains": [
+               "ip"
+            ],
+            "primary": true,
+            "required": true
+          }
+        },
+        "render": {
+          "width": 12,
+          "title": "Get Events",
+          "type": "table",
+          "height": 5
+        },
+	      "output": [
+	      {
+	        "data_path": "action_result.summary",
+	        "data_type": "string"
+	      },
+        {
+          "data_path": "action_result.data",
+          "data_type": "string",
+          "column_name": "Summary",
+          "column_order": 1
+        },
+        {
+          "data_path": "action_result.status",
+          "data_type": "string",
+          "column_name": "Status",
+          "column_order": 2
+        }
+        ],
+        "versions":"EQ(*)"
+      },
+      {
+        "action" : "dxl push md5",
+        "description": "Push a MD5 Hash into the TIE Database",
+        "type": "contain",
+        "identifier": "tie_md5",
+        "read_only": true,
+        "parameters": {
+          "tie_md5": {
+            "description": "Hash to push into TIE",
+            "data_type": "string",
+            "contains": ["md5"],
+            "primary": true,
+            "required": true
+          },
+          "dxl_rep": {
+            "description": "TIE Reputation",
+            "data_type": "string",
+            "contains": ["reputation"],
+            "primary": true,
+            "required": true
+          }
+        },
+        "render": {
+          "width": 12,
+          "title": "Get Events",
+          "type": "table",
+          "height": 5
+        },
+        "output": [
+        {
+        "data_path": "action_result.summary",
+        "data_type": "string"
+        },
+        {
+          "data_path": "action_result.data",
+          "data_type": "string",
+          "column_name": "Summary",
+          "column_order": 1
+        },
+        {
+          "data_path": "action_result.status",
+          "data_type": "string",
+          "column_name": "Status",
+          "column_order": 2
+        }
+        ],
+        "versions":"EQ(*)"
+      },
+      {
+        "action" : "lookup md5",
+        "description": "Lookup MD5 Hash with McAfee Active Response",
+        "type": "investigate",
+        "identifier": "mar_md5",
+        "read_only": true,
+        "parameters": {
+          "mar_md5": {
+            "description": "MD5 Lookup with MAR",
+            "data_type": "string",
+            "contains": ["md5"],
+            "primary": true,
+            "required": true
+          }
+        },
+        "render": {
+          "width": 12,
+          "title": "Lookup Md5",
+          "type": "table",
+          "height": 5
+        },
+        "output": [
+          {
+            "data_path": "action_result.data.*.items.*.id",
+            "data_type": "string",
+            "column_name": "ID",
+            "column_order": 6
+          },
+          {
+            "data_path": "action_result.data.*.items.*.count",
+            "data_type": "numeric"
+          },
+          {
+            "data_path": "action_result.data.*.items.*.output.Files|md5",
+            "data_type": "string",
+            "column_name": "File MD5",
+            "column_order": 5,
+            "contains": [
+              "md5"
+            ]
+          },
+          {
+            "data_path": "action_result.data.*.items.*.output.Files|status",
+            "data_type": "string",
+            "column_name": "Status",
+            "column_order": 4
+          },
+          {
+            "data_path": "action_result.data.*.items.*.output.HostInfo|hostname",
+            "data_type": "string",
+            "column_name": "Hostname",
+            "column_order": 2,
+            "contains": [
+              "host name"
+            ]
+          },
+          {
+            "data_path": "action_result.data.*.items.*.output.HostInfo|ip_address",
+            "data_type": "string",
+            "column_name": "IP Address",
+            "column_order": 3,
+            "contains": [
+              "ip"
+            ]
+          },
+          {
+            "data_path": "action_result.data.*.items.*.created_at",
+            "data_type": "string",
+            "column_name": "Date",
+            "column_order": 1
+          },
+          {
+            "data_path": "action_result.data.*.startIndex",
+            "data_type": "numeric"
+          },
+          {
+            "data_path": "action_result.data.*.totalItems",
+            "data_type": "numeric"
+          },
+          {
+            "data_path": "action_result.data.*.itemsPerPage",
+            "data_type": "numeric"
+          },
+          {
+            "data_path": "action_result.data.*.currentItemCount",
+            "data_type": "numeric"
+          },
+          {
+            "data_path": "action_result.status",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.message",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.parameter.mar_md5",
+            "data_type": "string",
+            "contains": [
+              "md5"
+            ]
+          },
+          {
+            "data_path": "summary.total_objects",
+            "data_type": "numeric"
+          },
+          {
+            "data_path": "summary.total_objects_successful",
+            "data_type": "numeric"
+          }
+        ],
+        "versions":"EQ(*)"
+      }
+    ]
+}
