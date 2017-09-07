@@ -41,7 +41,7 @@
             "versions":"EQ(*)"
         },
         {
-            "action" : "push ip",
+            "action" : "post ip",
             "description": "Push an event over the McAfee DXL fabric",
             "type": "contain",
             "identifier": "dxl_ip",
@@ -96,7 +96,7 @@
             "versions":"EQ(*)"
         },
         {
-            "action" : "push hash",
+            "action" : "post hash",
             "description": "Push a MD5 Hash into the TIE Database",
             "type": "contain",
             "identifier": "tie_md5",
