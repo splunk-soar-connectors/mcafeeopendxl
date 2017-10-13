@@ -7,12 +7,12 @@
     "type": "information",
     "license": "Copyright (c) Martin Ohl 2017",
     "main_module" : "dxl_connector.pyc",
-    "app_version": "1.1.1",
-    "utctime_updated": "2017-03-10T07:09:42.000000Z",
+    "app_version": "1.1.2",
+    "utctime_updated": "2017-10-13T07:09:42.000000Z",
     "product_vendor": "McAfee",
     "product_name": "OpenDXL",
     "product_version_regex": ".*",
-    "min_phantom_version": "1.2.236",
+    "min_phantom_version": "3.0.251",
     "logo": "dxl.png",
     "configuration": {
         "dxl_topic": {
