@@ -17,7 +17,11 @@ from dxltieclient.constants import HashType
 from dxlmarclient import MarClient
 
 import simplejson as json
+import uuid
+import datetime
 
+now = datetime.datetime.utcnow()
+nowform = now.strftime("%Y-%m-%d %H:%M:%S")
 
 # Define the App Class
 class DXLConnector(BaseConnector):
@@ -27,6 +31,36 @@ class DXLConnector(BaseConnector):
         # Call the BaseConnectors init first
         super(DXLConnector, self).__init__()
 
+    def _message(self, dxl_msg):
+
+        # Creating DXL message in CEF format for McAfee SIA DXL Task Manager
+        agentuid = str(uuid.uuid4()).lower()
+        cef = {
+              "DXLCommonEvent":
+              {
+              "AgentGUID": agentuid,
+              "Analyzer": "",
+              "AnalyzerName": "Phantom Cyber Post IP",
+              "AnalyzerVersion": "",
+              "DetectedUTC": nowform,
+              "SourceIPV4": "",
+              "TargetIPV4": dxl_msg,
+              "ThreatActionTaken": "contain",
+              "ThreatCategory": "IP",
+              "ThreatEventID": "204250",
+              "ThreatName": "Suspicious IP",
+              "ThreatSeverity": "5",
+              "ThreatType": "Suspicious IP for containment.",
+              "TargetPort": "80",
+              "ThreatHandled": "",
+              "AnalyzerIPV6": "",
+              "SourceIPV6": "",
+              "TargetIPV6": ""
+              }
+              }
+
+        return cef
+        
     def _test_connectivity(self, param):
 
         config = self.get_config()
@@ -84,10 +118,12 @@ class DXLConnector(BaseConnector):
             CONFIG_FILE = os.path.join(dir, 'certs/dxlclient.config')
             dxlconfig = DxlClientConfig.create_dxl_config_from_file(CONFIG_FILE)
 
+            message = self._message(dxl_msg)
+            
             with DxlClient(dxlconfig) as client:
                 client.connect()
                 event = Event(dxl_topic)
-                event.payload = str(dxl_msg).encode()
+                event.payload = str(message).encode()
                 client.send_event(event)
                 action_result.add_data(dxl_msg)
                 action_result.set_status(phantom.APP_SUCCESS, DXL_SUCC_QUERY)
@@ -149,8 +185,8 @@ class DXLConnector(BaseConnector):
         except:
             self.set_status(phantom.APP_ERROR, DXL_ERR_SERVER_CONNECTION)
             self.append_to_message(DXL_ERR_CONNECTIVITY_TEST)
+            action_result.set_status(phantom.APP_ERROR, DXL_ERR_QUERY, dxl_msg)
             return self.get_status()
-        action_result.set_status(phantom.APP_ERROR, DXL_ERR_QUERY, dxl_msg)
 
         return action_result.get_status()
 
