@@ -6,7 +6,7 @@
     "package_name": "phantom_dxl",
     "type": "information",
     "license": "Copyright (c) Martin Ohl 2017",
-    "main_module" : "dxl_connector.pyc",
+    "main_module": "dxl_connector.pyc",
     "app_version": "1.1.2",
     "utctime_updated": "2017-10-13T07:09:42.000000Z",
     "product_vendor": "McAfee",
@@ -35,13 +35,12 @@
             "type": "test",
             "identifier": "test_asset_connectivity",
             "read_only": true,
-            "parameters": {
-            },
+            "parameters": {},
             "output": [],
-            "versions":"EQ(*)"
+            "versions": "EQ(*)"
         },
         {
-            "action" : "post ip",
+            "action": "post ip",
             "description": "Push an event over the McAfee DXL fabric",
             "type": "contain",
             "identifier": "dxl_ip",
@@ -93,10 +92,10 @@
                     ]
                 }
             ],
-            "versions":"EQ(*)"
+            "versions": "EQ(*)"
         },
         {
-            "action" : "post hash",
+            "action": "post hash",
             "description": "Push a MD5 Hash into the TIE Database",
             "type": "contain",
             "identifier": "tie_md5",
@@ -105,7 +104,9 @@
                 "tie_md5": {
                     "description": "Hash to push into TIE",
                     "data_type": "string",
-                    "contains": ["md5"],
+                    "contains": [
+                        "md5"
+                    ],
                     "primary": true,
                     "required": true,
                     "order": 0
@@ -113,7 +114,9 @@
                 "dxl_rep": {
                     "description": "TIE Reputation",
                     "data_type": "string",
-                    "contains": ["dxl reputation"],
+                    "contains": [
+                        "dxl reputation"
+                    ],
                     "primary": true,
                     "required": true,
                     "order": 1
@@ -161,10 +164,10 @@
                     ]
                 }
             ],
-            "versions":"EQ(*)"
+            "versions": "EQ(*)"
         },
         {
-            "action" : "lookup hash",
+            "action": "lookup hash",
             "description": "Lookup MD5 Hash with McAfee Active Response",
             "type": "investigate",
             "identifier": "mar_md5",
@@ -173,7 +176,9 @@
                 "mar_md5": {
                     "description": "MD5 Lookup with MAR",
                     "data_type": "string",
-                    "contains": ["md5"],
+                    "contains": [
+                        "md5"
+                    ],
                     "primary": true,
                     "required": true
                 }
@@ -278,7 +283,10 @@
                     "data_type": "numeric"
                 }
             ],
-            "versions":"EQ(*)"
+            "versions": "EQ(*)"
         }
-    ]
+    ],
+    "pip_dependencies": {
+        "wheel": []
+    }
 }
